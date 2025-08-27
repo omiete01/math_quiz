@@ -261,35 +261,35 @@ def get_user_history():
         return jsonify({"error": str(e)}), 500
 
 
-@app.route('/quiz/status', methods=['GET'])
-def quiz_status():
-    token = request.headers.get('Authorization')
-    if not token:
-        return jsonify({"error": "Token is required"}), 401
+# @app.route('/quiz/status', methods=['GET'])
+# def quiz_status():
+#     token = request.headers.get('Authorization')
+#     if not token:
+#         return jsonify({"error": "Token is required"}), 401
 
-    try:
-        payload = jwt.decode(token, app.config['SECRET_KEY'], algorithms=["HS256"])
-        user_id = payload['user_id']
-    except jwt.ExpiredSignatureError:
-        return jsonify({"error": "Token expired"}), 401
-    except jwt.InvalidTokenError:
-        return jsonify({"error": "Invalid token"}), 401
+#     try:
+#         payload = jwt.decode(token, app.config['SECRET_KEY'], algorithms=["HS256"])
+#         user_id = payload['user_id']
+#     except jwt.ExpiredSignatureError:
+#         return jsonify({"error": "Token expired"}), 401
+#     except jwt.InvalidTokenError:
+#         return jsonify({"error": "Invalid token"}), 401
     
-    session_id = str(user_id)
-    session = quiz_sessions.get(session_id)
-    if not session:
-        return jsonify({"error": "No active quiz session"}), 400
+#     session_id = str(user_id)
+#     session = quiz_sessions.get(session_id)
+#     if not session:
+#         return jsonify({"error": "No active quiz session"}), 400
 
-    elapsed_time = round(time.time() - session["start_time"], 2)
+#     elapsed_time = round(time.time() - session["start_time"], 2)
     
-    return jsonify({
-        "current_question": session["current_question"],
-        "total_questions": session["total_questions"],
-        "questions_answered": session["questions_answered"],
-        "correct_answers": session["correct_answers"],
-        "elapsed_time": elapsed_time,
-        "time_unit": "seconds"
-    }), 200
+#     return jsonify({
+#         "current_question": session["current_question"],
+#         "total_questions": session["total_questions"],
+#         "questions_answered": session["questions_answered"],
+#         "correct_answers": session["correct_answers"],
+#         "elapsed_time": elapsed_time,
+#         "time_unit": "seconds"
+#     }), 200
 
 if __name__ == '__main__':
     app.run(debug=True)
